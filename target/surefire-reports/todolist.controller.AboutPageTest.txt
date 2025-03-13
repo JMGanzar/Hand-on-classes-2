@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
-Test set: todolist.controller.TareaWebTest
+Test set: todolist.controller.AboutPageTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.515 s - in todolist.controller.TareaWebTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.244 s - in todolist.controller.AboutPageTest

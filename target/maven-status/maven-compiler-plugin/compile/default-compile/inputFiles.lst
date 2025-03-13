@@ -8,6 +8,7 @@ C:\Users\jmgan\GitHub\Hand-on-classes-2\src\main\java\todolist\service\InitDbSer
 C:\Users\jmgan\GitHub\Hand-on-classes-2\src\main\java\todolist\Application.java
 C:\Users\jmgan\GitHub\Hand-on-classes-2\src\main\java\todolist\repository\UsuarioRepository.java
 C:\Users\jmgan\GitHub\Hand-on-classes-2\src\main\java\todolist\controller\TareaController.java
+C:\Users\jmgan\GitHub\Hand-on-classes-2\src\main\java\todolist\controller\HomeController.java
 C:\Users\jmgan\GitHub\Hand-on-classes-2\src\main\java\todolist\service\UsuarioServiceException.java
 C:\Users\jmgan\GitHub\Hand-on-classes-2\src\main\java\todolist\controller\exception\TareaNotFoundException.java
 C:\Users\jmgan\GitHub\Hand-on-classes-2\src\main\java\todolist\dto\LoginData.java
