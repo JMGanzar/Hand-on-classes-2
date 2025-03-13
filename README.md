@@ -27,3 +27,6 @@ $ java -jar target/todolist-inicial-0.0.1-SNAPSHOT.jar
 Once the app is running, you can open your favourite browser and connect to:
 
 - [http://localhost:8080/login](http://localhost:8080/login)
+
+Link to Trello's board: 
+- https://trello.com/b/qwBdSOAF/hand-on-classes-2-to-do-list
