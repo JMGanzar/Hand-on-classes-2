@@ -19,8 +19,13 @@
         <div class="collapse navbar-collapse">
             <!-- Menú izquierdo (solo para usuarios logueados) -->
             <ul class="navbar-nav mr-auto" th:if="${loggedIn}">
+                <!-- Enlace a Tasks -->
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/usuarios/{id}/tareas(id=${usuario.id})}">Tasks</a>
+                </li>
+                <!-- Nuevo enlace a User List -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/registered}">Usuarios</a>
                 </li>
             </ul>
             <!-- Menú derecho (login/logout) -->
