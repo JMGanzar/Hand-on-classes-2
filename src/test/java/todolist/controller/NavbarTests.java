@@ -83,7 +83,7 @@ public class NavbarTests {
         UsuarioData usuarioMock = new UsuarioData();
         usuarioMock.setId(userId);
         usuarioMock.setNombre("Richard Stallman");
-        usuarioMock.setEmail("richard");
+        usuarioMock.setEmail("richard@umh.es");
 
         // Mockear todas las dependencias críticas
         when(sessionManager.usuarioLogeado()).thenReturn(userId);
