@@ -4,7 +4,7 @@
 <head th:fragment="head (titulo)">
     <meta charset="UTF-8"/>
     <title th:text="${titulo}"></title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
 </head>
 
 <div th:fragment="javascript">
@@ -19,8 +19,13 @@
         <div class="collapse navbar-collapse">
             <!-- Menú izquierdo (solo para usuarios logueados) -->
             <ul class="navbar-nav mr-auto" th:if="${loggedIn}">
+                <!-- Enlace a Tasks -->
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/usuarios/{id}/tareas(id=${usuario.id})}">Tasks</a>
+                </li>
+                <!-- Nuevo enlace a User List -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/registered}">Users</a>
                 </li>
             </ul>
             <!-- Menú derecho (login/logout) -->
@@ -44,5 +49,4 @@
         </div>
     </nav>
 </div>
-
 </html>
