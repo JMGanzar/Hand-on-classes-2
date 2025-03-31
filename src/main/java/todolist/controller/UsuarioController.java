@@ -45,24 +45,19 @@ public class UsuarioController {
     public String verUsuario(@PathVariable Long id, Model model) {
         Long usuarioLogeadoId = managerUserSession.usuarioLogeado();
 
-        // Verificar autenticación
-        boolean loggedIn = (usuarioLogeadoId != null);
-        model.addAttribute("loggedIn", loggedIn);
-
-        if (!loggedIn) {
+        if (usuarioLogeadoId == null) {
             return "redirect:/login";
         }
 
-        // Obtener usuario a mostrar
-        UsuarioData usuario = usuarioService.findById(id);
-        if (usuario == null) {
-            return "redirect:/registered"; // Redirige si el usuario no existe
+        try {
+            UsuarioData usuario = usuarioService.findById(id);
+            model.addAttribute("loggedIn", true);
+            model.addAttribute("usuarioLogeado", usuarioService.findById(usuarioLogeadoId));
+            model.addAttribute("usuario", usuario);
+            return "descripcionUsuario";
+
+        } catch (RuntimeException e) {
+            return "redirect:/registered"; // Redirige si hay error
         }
-
-        // Añadir datos del usuario logeado y el usuario consultado
-        model.addAttribute("usuarioLogeado", usuarioService.findById(usuarioLogeadoId));
-        model.addAttribute("usuario", usuario);
-
-        return "descripcionUsuario";
     }
 }
