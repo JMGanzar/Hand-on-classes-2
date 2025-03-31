@@ -3,6 +3,7 @@ package todolist.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import todolist.dto.UsuarioData;
 import todolist.service.UsuarioService;
 import todolist.authentication.ManagerUserSession;
@@ -38,5 +39,30 @@ public class UsuarioController {
         model.addAttribute("usuarios", usuarioService.findAllUsuarios());
 
         return "listaUsuarios";
+    }
+
+    @GetMapping("/registered/{id}")
+    public String verUsuario(@PathVariable Long id, Model model) {
+        Long usuarioLogeadoId = managerUserSession.usuarioLogeado();
+
+        // Verificar autenticación
+        boolean loggedIn = (usuarioLogeadoId != null);
+        model.addAttribute("loggedIn", loggedIn);
+
+        if (!loggedIn) {
+            return "redirect:/login";
+        }
+
+        // Obtener usuario a mostrar
+        UsuarioData usuario = usuarioService.findById(id);
+        if (usuario == null) {
+            return "redirect:/registered"; // Redirige si el usuario no existe
+        }
+
+        // Añadir datos del usuario logeado y el usuario consultado
+        model.addAttribute("usuarioLogeado", usuarioService.findById(usuarioLogeadoId));
+        model.addAttribute("usuario", usuario);
+
+        return "descripcionUsuario";
     }
 }
