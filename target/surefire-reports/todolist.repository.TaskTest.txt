@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
-Test set: todolist.controller.NavbarTests
+Test set: todolist.repository.TaskTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.865 s - in todolist.controller.NavbarTests
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.139 s - in todolist.repository.TaskTest
