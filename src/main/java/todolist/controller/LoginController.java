@@ -39,15 +39,19 @@ public class LoginController {
     @PostMapping("/login")
     public String loginSubmit(@ModelAttribute LoginData loginData, Model model, HttpSession session) {
 
-        // Llamada al servicio para comprobar si el login es correcto
         UsuarioService.LoginStatus loginStatus = usuarioService.login(loginData.geteMail(), loginData.getPassword());
 
         if (loginStatus == UsuarioService.LoginStatus.LOGIN_OK) {
             UsuarioData usuario = usuarioService.findByEmail(loginData.geteMail());
-
             managerUserSession.logearUsuario(usuario.getId());
 
-            return "redirect:/usuarios/" + usuario.getId() + "/tareas";
+            // Redirigir al admin a la lista de usuarios
+            if (usuario.isAdmin()) {
+                return "redirect:/registered"; // Ruta para listar usuarios
+            } else {
+                return "redirect:/usuarios/" + usuario.getId() + "/tareas"; // Ruta normal de tareas
+            }
+
         } else if (loginStatus == UsuarioService.LoginStatus.USER_NOT_FOUND) {
             model.addAttribute("error", "No existe usuario");
             return "formLogin";
@@ -79,7 +83,7 @@ public class LoginController {
             usuario.setPassword(registroData.getPassword());
             usuario.setNombre(registroData.getNombre());
             usuario.setFechaNacimiento(registroData.getFechaNacimiento());
-            usuario.setEsAdmin(registroData.isAdmin()); // Capturar el valor del checkbox
+            usuario.setAdmin(registroData.isAdmin()); // Capturar el valor del checkbox
 
             usuarioService.registrar(usuario);
             return "redirect:/login";
