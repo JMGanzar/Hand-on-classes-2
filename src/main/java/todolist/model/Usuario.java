@@ -29,6 +29,9 @@ public class Usuario implements Serializable {
     @Column(name = "admin")
     private boolean admin = false;
 
+    @Column(name = "enabled")
+    private boolean enabled = true;
+
     // La relación es lazy por defecto,
     // es necesario acceder a la lista de tareas para que se carguen
     @OneToMany(mappedBy = "usuario")
@@ -42,7 +45,7 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
-    // Getters y setters (incluyendo el nuevo campo admin)
+    // Getters y setters (incluyendo los nuevos campos admin y enabled)
 
     public Long getId() {
         return id;
@@ -91,6 +94,15 @@ public class Usuario implements Serializable {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    // Getter y setter para el campo enabled
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     // Getters y setters de la relación con Tarea
