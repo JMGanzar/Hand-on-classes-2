@@ -66,6 +66,7 @@ public class UsuarioService {
         } else {
             // Validar si el nuevo usuario es admin y ya existe uno
             Usuario usuarioNuevo = modelMapper.map(usuario, Usuario.class);
+            usuarioNuevo.setEnabled(true);
             if (usuarioNuevo.isAdmin() && usuarioRepository.existsByAdmin(true)) {
                 throw new UsuarioServiceException("Ya existe un administrador registrado");
             }

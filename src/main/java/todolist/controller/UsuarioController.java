@@ -9,6 +9,7 @@ import todolist.dto.UsuarioData;
 import todolist.service.UsuarioService;
 import todolist.authentication.ManagerUserSession;
 import todolist.service.UsuarioServiceException;
+import java.util.List;
 
 @Controller
 public class UsuarioController {
@@ -30,9 +31,12 @@ public class UsuarioController {
     ) {
         Long loggedUserId = managerUserSession.usuarioLogeado();
 
-        // Verificar autenticación
+        // Verificar autenticación y auto-bloqueo
         if (loggedUserId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (id.equals(loggedUserId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         try {
@@ -48,21 +52,27 @@ public class UsuarioController {
         Long usuarioId = managerUserSession.usuarioLogeado();
 
         // Verificar autenticación
-        boolean loggedIn = (usuarioId != null);
-        model.addAttribute("loggedIn", loggedIn);
-
-        if (!loggedIn) {
+        if (usuarioId == null) {
             return "redirect:/login";
         }
 
-        // Añadir datos del usuario logeado
-        UsuarioData usuario = usuarioService.findById(usuarioId);
-        model.addAttribute("usuario", usuario);
+        try {
+            // Obtener usuario logeado y lista de usuarios
+            UsuarioData usuario = usuarioService.findById(usuarioId);
+            List<UsuarioData> usuarios = usuarioService.findAllUsuarios();
 
-        // Añadir lista de usuarios
-        model.addAttribute("usuarios", usuarioService.findAllUsuarios());
+            // Añadir atributos al modelo
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("usuarios", usuarios);
+            model.addAttribute("loggedIn", true);
 
-        return "usersList";
+            return "usersList";
+
+        } catch (Exception e) {
+            // Manejar errores mostrando un mensaje en la misma vista
+            model.addAttribute("error", "Error al cargar los usuarios: " + e.getMessage());
+            return "usersList"; // Mantenerse en la misma página
+        }
     }
 
     @GetMapping("/registered/{id}")
