@@ -43,6 +43,13 @@ public class LoginController {
 
         if (loginStatus == UsuarioService.LoginStatus.LOGIN_OK) {
             UsuarioData usuario = usuarioService.findByEmail(loginData.geteMail());
+
+            // Nueva verificación de usuario bloqueado
+            if (!usuario.isEnabled()) {
+                model.addAttribute("error", "Usuario bloqueado");
+                return "formLogin";
+            }
+
             managerUserSession.logearUsuario(usuario.getId());
 
             // Redirigir al admin a la lista de usuarios
@@ -94,9 +101,9 @@ public class LoginController {
         }
     }
 
-   @GetMapping("/logout")
-   public String logout(HttpSession session) {
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
         managerUserSession.logout();
         return "redirect:/login";
-   }
+    }
 }
