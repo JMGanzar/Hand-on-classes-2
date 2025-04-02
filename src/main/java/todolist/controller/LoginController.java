@@ -39,15 +39,26 @@ public class LoginController {
     @PostMapping("/login")
     public String loginSubmit(@ModelAttribute LoginData loginData, Model model, HttpSession session) {
 
-        // Llamada al servicio para comprobar si el login es correcto
         UsuarioService.LoginStatus loginStatus = usuarioService.login(loginData.geteMail(), loginData.getPassword());
 
         if (loginStatus == UsuarioService.LoginStatus.LOGIN_OK) {
             UsuarioData usuario = usuarioService.findByEmail(loginData.geteMail());
 
+            // Nueva verificación de usuario bloqueado
+            if (!usuario.isEnabled()) {
+                model.addAttribute("error", "Usuario bloqueado");
+                return "formLogin";
+            }
+
             managerUserSession.logearUsuario(usuario.getId());
 
-            return "redirect:/usuarios/" + usuario.getId() + "/tareas";
+            // Redirigir al admin a la lista de usuarios
+            if (usuario.isAdmin()) {
+                return "redirect:/registered"; // Ruta para listar usuarios
+            } else {
+                return "redirect:/usuarios/" + usuario.getId() + "/tareas"; // Ruta normal de tareas
+            }
+
         } else if (loginStatus == UsuarioService.LoginStatus.USER_NOT_FOUND) {
             model.addAttribute("error", "No existe usuario");
             return "formLogin";
@@ -60,36 +71,42 @@ public class LoginController {
 
     @GetMapping("/registro")
     public String registroForm(Model model) {
+        // Verificar si ya existe un administrador
+        boolean adminExists = usuarioService.existsByAdmin(true);
+        model.addAttribute("adminExists", adminExists);
         model.addAttribute("registroData", new RegistroData());
         return "formRegistro";
     }
 
-   @PostMapping("/registro")
-   public String registroSubmit(@Valid RegistroData registroData, BindingResult result, Model model) {
-
+    @PostMapping("/registro")
+    public String registroSubmit(@Valid RegistroData registroData, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "formRegistro";
         }
 
-        if (usuarioService.findByEmail(registroData.getEmail()) != null) {
-            model.addAttribute("registroData", registroData);
-            model.addAttribute("error", "El usuario " + registroData.getEmail() + " ya existe");
+        try {
+            UsuarioData usuario = new UsuarioData();
+            usuario.setEmail(registroData.getEmail());
+            usuario.setPassword(registroData.getPassword());
+            usuario.setNombre(registroData.getNombre());
+            usuario.setFechaNacimiento(registroData.getFechaNacimiento());
+            usuario.setAdmin(registroData.isAdmin());
+
+            // Añadir esta línea para establecer enabled = true
+            usuario.setEnabled(true);
+
+            usuarioService.registrar(usuario);
+            return "redirect:/login";
+
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
             return "formRegistro";
         }
+    }
 
-        UsuarioData usuario = new UsuarioData();
-        usuario.setEmail(registroData.getEmail());
-        usuario.setPassword(registroData.getPassword());
-        usuario.setFechaNacimiento(registroData.getFechaNacimiento());
-        usuario.setNombre(registroData.getNombre());
-
-        usuarioService.registrar(usuario);
-        return "redirect:/login";
-   }
-
-   @GetMapping("/logout")
-   public String logout(HttpSession session) {
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
         managerUserSession.logout();
         return "redirect:/login";
-   }
+    }
 }

@@ -11,7 +11,8 @@ public class UsuarioData {
     private String nombre;
     private String password;
     private Date fechaNacimiento;
-    private boolean esAdmin;
+    private boolean admin;
+    private boolean enabled; // Nuevo campo añadido
 
     // Getters y setters
 
@@ -51,8 +52,12 @@ public class UsuarioData {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public boolean isEsAdmin() { return esAdmin; }
-    public void setEsAdmin(boolean esAdmin) { this.esAdmin = esAdmin; }
+    public boolean isAdmin() { return admin; }
+    public void setAdmin(boolean admin) { this.admin = admin; }
+
+    // Nuevos getter y setter para enabled
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
 
     // Sobreescribimos equals y hashCode para que dos usuarios sean iguales
     // si tienen el mismo ID (ignoramos el resto de atributos)

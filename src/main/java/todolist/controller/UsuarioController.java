@@ -1,12 +1,15 @@
 package todolist.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import todolist.dto.UsuarioData;
 import todolist.service.UsuarioService;
 import todolist.authentication.ManagerUserSession;
+import todolist.service.UsuarioServiceException;
+import java.util.List;
 
 @Controller
 public class UsuarioController {
@@ -19,26 +22,57 @@ public class UsuarioController {
         this.managerUserSession = managerUserSession;
     }
 
+    // Nuevo endpoint para actualizar estado de usuario
+    @PutMapping("/registered/{id}/status")
+    @ResponseBody
+    public ResponseEntity<?> updateUserStatus(
+            @PathVariable Long id,
+            @RequestParam boolean enabled
+    ) {
+        Long loggedUserId = managerUserSession.usuarioLogeado();
+
+        // Verificar autenticación y auto-bloqueo
+        if (loggedUserId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (id.equals(loggedUserId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        try {
+            usuarioService.toggleUserStatus(id, enabled);
+            return ResponseEntity.ok().build();
+        } catch (UsuarioServiceException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/registered")
     public String listUsuarios(Model model) {
         Long usuarioId = managerUserSession.usuarioLogeado();
 
         // Verificar autenticación
-        boolean loggedIn = (usuarioId != null);
-        model.addAttribute("loggedIn", loggedIn);
-
-        if (!loggedIn) {
+        if (usuarioId == null) {
             return "redirect:/login";
         }
 
-        // Añadir datos del usuario logeado
-        UsuarioData usuario = usuarioService.findById(usuarioId);
-        model.addAttribute("usuario", usuario);
+        try {
+            // Obtener usuario logeado y lista de usuarios
+            UsuarioData usuario = usuarioService.findById(usuarioId);
+            List<UsuarioData> usuarios = usuarioService.findAllUsuarios();
 
-        // Añadir lista de usuarios
-        model.addAttribute("usuarios", usuarioService.findAllUsuarios());
+            // Añadir atributos al modelo
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("usuarios", usuarios);
+            model.addAttribute("loggedIn", true);
 
-        return "usersList";
+            return "usersList";
+
+        } catch (Exception e) {
+            // Manejar errores mostrando un mensaje en la misma vista
+            model.addAttribute("error", "Error al cargar los usuarios: " + e.getMessage());
+            return "usersList"; // Mantenerse en la misma página
+        }
     }
 
     @GetMapping("/registered/{id}")

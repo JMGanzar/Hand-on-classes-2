@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import java.util.Optional;
 
 @Service
@@ -27,6 +26,21 @@ public class UsuarioService {
     @Autowired
     private ModelMapper modelMapper;
 
+    // Método nuevo para verificar existencia de administrador
+    @Transactional(readOnly = true)
+    public boolean existsByAdmin(boolean admin) {
+        return usuarioRepository.existsByAdmin(admin);
+    }
+
+    // Nuevo método para cambiar el estado enabled
+    @Transactional
+    public void toggleUserStatus(Long userId, boolean enabled) {
+        Usuario usuario = usuarioRepository.findById(userId)
+                .orElseThrow(() -> new UsuarioServiceException("Usuario no encontrado"));
+        usuario.setEnabled(enabled);
+        usuarioRepository.save(usuario);
+    }
+
     @Transactional(readOnly = true)
     public LoginStatus login(String eMail, String password) {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(eMail);
@@ -39,20 +53,24 @@ public class UsuarioService {
         }
     }
 
-    // Se añade un usuario en la aplicación.
-    // El email y password del usuario deben ser distinto de null
-    // El email no debe estar registrado en la base de datos
+    // Registro modificado para validar administrador único
     @Transactional
     public UsuarioData registrar(UsuarioData usuario) {
         Optional<Usuario> usuarioBD = usuarioRepository.findByEmail(usuario.getEmail());
-        if (usuarioBD.isPresent())
+        if (usuarioBD.isPresent()) {
             throw new UsuarioServiceException("El usuario " + usuario.getEmail() + " ya está registrado");
-        else if (usuario.getEmail() == null)
+        } else if (usuario.getEmail() == null) {
             throw new UsuarioServiceException("El usuario no tiene email");
-        else if (usuario.getPassword() == null)
+        } else if (usuario.getPassword() == null) {
             throw new UsuarioServiceException("El usuario no tiene password");
-        else {
+        } else {
+            // Validar si el nuevo usuario es admin y ya existe uno
             Usuario usuarioNuevo = modelMapper.map(usuario, Usuario.class);
+            usuarioNuevo.setEnabled(true);
+            if (usuarioNuevo.isAdmin() && usuarioRepository.existsByAdmin(true)) {
+                throw new UsuarioServiceException("Ya existe un administrador registrado");
+            }
+
             usuarioNuevo = usuarioRepository.save(usuarioNuevo);
             return modelMapper.map(usuarioNuevo, UsuarioData.class);
         }
@@ -61,22 +79,19 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public UsuarioData findByEmail(String email) {
         Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
-        if (usuario == null) return null;
-        else {
-            return modelMapper.map(usuario, UsuarioData.class);
-        }
+        return (usuario != null) ? modelMapper.map(usuario, UsuarioData.class) : null;
     }
 
     @Transactional(readOnly = true)
     public UsuarioData findById(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado")); // Lanza excepción
+                .orElseThrow(() -> new UsuarioServiceException("Usuario no encontrado"));
         return modelMapper.map(usuario, UsuarioData.class);
     }
 
     @Transactional(readOnly = true)
     public List<UsuarioData> findAllUsuarios() {
-        Iterable<Usuario> usuarios = usuarioRepository.findAll(); // Usa el método existente de CrudRepository
+        Iterable<Usuario> usuarios = usuarioRepository.findAll();
         return StreamSupport.stream(usuarios.spliterator(), false)
                 .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
                 .collect(Collectors.toList());
