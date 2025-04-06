@@ -30,7 +30,7 @@ public class UserListServiceTest {
         when(usuarioService.findAllUsuarios()).thenReturn(Arrays.asList(usuario1, usuario2));
 
         List<UsuarioData> usuarios = usuarioService.findAllUsuarios();
-        assertThat(usuarios).hasSize(2); // ✅ 2 usuarios mockeados
+        assertThat(usuarios).hasSize(2);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class UserListServiceTest {
         when(usuarioService.findAllUsuarios()).thenReturn(Collections.emptyList());
 
         List<UsuarioData> usuarios = usuarioService.findAllUsuarios();
-        assertThat(usuarios).isEmpty(); // ✅ Lista vacía
+        assertThat(usuarios).isEmpty();
     }
 
     @Test
@@ -54,7 +54,7 @@ public class UserListServiceTest {
         List<UsuarioData> usuarios = usuarioService.findAllUsuarios();
         UsuarioData retrievedUser = usuarios.get(0);
 
-        assertThat(retrievedUser.getPassword()).isNull(); // ✅ Password no expuesto
+        assertThat(retrievedUser.getPassword()).isNull();
         assertThat(retrievedUser.getEmail()).isEqualTo("dto-test@umh.es");
     }
 }

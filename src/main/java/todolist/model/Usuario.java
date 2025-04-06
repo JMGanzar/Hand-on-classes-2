@@ -119,8 +119,6 @@ public class Usuario implements Serializable {
         }
     }
 
-    // equals() y hashCode() (sin cambios)
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

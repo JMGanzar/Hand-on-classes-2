@@ -23,25 +23,10 @@ public class UserDescriptionWebTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private UsuarioService usuarioService;
-
-    @MockBean
-    private ManagerUserSession managerUserSession;
-
     @Test
     public void testIdNoNumerico_EnUrl() throws Exception {
         // When: ID no numérico en la URL
         mockMvc.perform(get("/registered/abc"))
                 .andExpect(status().isBadRequest());
-    }
-
-    // Método helper
-    private UsuarioData crearUsuarioDePrueba(String email, boolean admin) {
-        UsuarioData usuario = new UsuarioData();
-        usuario.setEmail(email);
-        usuario.setPassword("1234");
-        usuario.setAdmin(admin);
-        return usuarioService.registrar(usuario);
     }
 }

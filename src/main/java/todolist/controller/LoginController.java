@@ -92,7 +92,7 @@ public class LoginController {
             usuario.setFechaNacimiento(registroData.getFechaNacimiento());
             usuario.setAdmin(registroData.isAdmin());
 
-            // Añadir esta línea para establecer enabled = true
+            // Establecer enabled = true
             usuario.setEnabled(true);
 
             usuarioService.registrar(usuario);

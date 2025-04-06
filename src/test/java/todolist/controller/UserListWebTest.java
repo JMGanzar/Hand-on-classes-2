@@ -80,7 +80,7 @@ public class UserListWebTest {
 
         UsuarioData loggedUser = new UsuarioData();
         loggedUser.setId(1L);
-        when(usuarioService.findById(1L)).thenReturn(loggedUser); // ✅ Método corregido
+        when(usuarioService.findById(1L)).thenReturn(loggedUser);
 
         UsuarioData usuario = new UsuarioData();
         usuario.setEmail("test@umh.es");
@@ -98,7 +98,7 @@ public class UserListWebTest {
 
         UsuarioData loggedUser = new UsuarioData();
         loggedUser.setId(1L);
-        when(usuarioService.findById(1L)).thenReturn(loggedUser); // ✅ Método corregido
+        when(usuarioService.findById(1L)).thenReturn(loggedUser);
 
         when(usuarioService.findAllUsuarios()).thenReturn(Collections.emptyList());
 
@@ -112,7 +112,7 @@ public class UserListWebTest {
 
         UsuarioData loggedUser = new UsuarioData();
         loggedUser.setId(1L);
-        when(usuarioService.findById(1L)).thenReturn(loggedUser); // ✅ Método corregido
+        when(usuarioService.findById(1L)).thenReturn(loggedUser);
 
         UsuarioData usuario = new UsuarioData();
         usuario.setId(99L);
