@@ -28,6 +28,7 @@ Once the app is running, you can open your favourite browser and connect to:
 
 - [http://localhost:8080/login](http://localhost:8080/login)
 
-Link to Github Repository and Trello's board: 
-- https://github.com/JMGanzar/Hand-on-classes-2
-- https://trello.com/b/qwBdSOAF/hand-on-classes-2-to-do-list
+Useful Links: 
+- GitHub Repository: https://github.com/JMGanzar/Hand-on-classes-2
+- Trello's Board: https://trello.com/b/qwBdSOAF/hand-on-classes-2-to-do-list
+- Docker Image: https://hub.docker.com/r/jmganzar/p2-todolistapp
