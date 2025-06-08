@@ -14,6 +14,15 @@
 </div>
 
 <div th:fragment="navbar(loggedIn, username)">
+    <style>
+        .dropdown-menu {
+            min-width: 150px;
+            white-space: normal;
+        }
+        .dropdown-item {
+            white-space: normal;
+        }
+    </style>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/about">ToDoList</a>
         <div class="collapse navbar-collapse">
@@ -36,7 +45,7 @@
                     </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="#">Account</a>
-                        <a class="dropdown-item" href="/logout">Log out</a>
+                        <a class="dropdown-item" href="/logout">Log out <span th:text="${usuario.nombre}">Usuario</span></a>
                     </div>
                 </li>
                 <li class="nav-item" th:unless="${loggedIn}">
